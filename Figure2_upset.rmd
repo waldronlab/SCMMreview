@@ -1,0 +1,68 @@
+---
+title: "Figure2"
+author: "Dario Righelli"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+```{r,eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("SingleCellMultiModal")
+```
+
+
+```{r}
+library(SingleCellMultiModal)
+library(UpSetR)
+```
+
+# Retrieving data
+
+```{r}
+(mae <- CITEseq(DataType="peripheral_blood", modes="*", dry.run=FALSE, version="1.0.0"))
+```
+
+# Plotting Upset 
+
+The upset plot represents the numerosity insersections across the modalities
+in terms of samples.
+
+## All conditions
+
+We are now plotting an upset showing the total number of samples in our 
+`MultyAssayExperiment` object and how they are distributed across the three 
+modalities.
+
+```{r}
+upsetSamples(mae, text.scale=c(2,2,2))
+```
+
+## CTCL condition
+
+To better understand the distribution of the samples across the modalities we
+split them based on the experimental conditions.
+
+Here we plot the cutaneous T-cell lymphoma (CTCL) samples.
+
+```{r}
+(ctclMae <- mae[,colData(mae)$condition == "CTCL",])
+upsetSamples(ctclMae, text.scale=c(2,2,2))
+```
+
+Here we plot the control (CTRL) samples.
+
+```{r}
+(ctrlMae <- mae[,colData(mae)$condition == "CTRL",])
+upsetSamples(ctrlMae, text.scale=c(2,2,2))
+```
+
+# SessionInfo 
+
+```{r, tidy=TRUE}
+sessionInfo()
+```
+
+
+
+
+
